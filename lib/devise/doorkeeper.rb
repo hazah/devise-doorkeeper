@@ -13,7 +13,7 @@ module Devise
     def self.configure_doorkeeper(base, klass, scope)
       base.instance_eval do
         resource_owner_authenticator do
-          current_user || warden.authenticate!(scope: scope)
+          send("current_#{scope}") || warden.authenticate!(scope: scope)
         end
 
         # configure doorkeeper to use devise database authenticatable plugin
