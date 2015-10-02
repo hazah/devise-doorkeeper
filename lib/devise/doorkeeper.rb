@@ -10,15 +10,15 @@ module Devise
       end
     end
 
-    def self.configure_doorkeeper(base)
+    def self.configure_doorkeeper(base, klass, scope)
       base.instance_eval do
         resource_owner_authenticator do
-          current_user || warden.authenticate!(scope: :user)
+          current_user || warden.authenticate!(scope: scope)
         end
 
         # configure doorkeeper to use devise database authenticatable plugin
         resource_owner_from_credentials do
-          user = User.find_for_database_authentication(email: params[:username])
+          user = klass.find_for_database_authentication(email: params[:username])
           if user && user.valid_for_authentication? { user.valid_password?(params[:password]) }
             user
           else
